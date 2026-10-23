@@ -1,0 +1,43 @@
+# private/ 可以选择进仓库随 git 同步（跨设备）；放进来时仓库必须保持 private
+
+# 设备登记：本机生成（真实用户名 / 路径），不进 git；只保留 .gitkeep
+registry/devices/*.yaml
+!registry/devices/.gitkeep
+
+# 凭证：永远不进 git（webhook、token、密码之类）
+private/feishu-webhook.md
+private/secrets/
+*.secret
+
+# 采集草稿属于临时产物; 确认后的内容应已并入 journal/
+inbox/*.md
+!inbox/.gitkeep
+
+# 系统与编辑器
+Thumbs.db
+desktop.ini
+.DS_Store
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+
+# Claude Code 本机覆盖配置
+.claude/settings.local.json
+
+# 夜间巡检日志
+inbox/logs/
+inbox/experience/
+
+# 指挥台生成物：每台设备自己生成，不进 git
+/inbox/console/
+/inbox/shots-*/
+# 验收证据：机器生成的大 json、截图、gif、录屏、日志不进提交（见 tools/push_guard.py）
+docs/delivery/**/evidence/
+docs/delivery/**/shots/
+docs/delivery/**/logs/
+docs/delivery/**/inputs*.json
+docs/delivery/**/*.png
+docs/delivery/**/*.gif
+docs/delivery/**/*.webm
+runs/shots/

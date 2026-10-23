@@ -1,0 +1,31 @@
+# gitleaks 配置：不再整目录放行 tests/。测试夹具里故意放了假密钥 / token（用来验证脱敏和推送闸）；
+# 私钥头、JWT 这类夹具在测试里运行时才拼接（源码里是断开的字符串），根本不会被扫描器当成密钥，所以不需要豁免。
+# 只对「具体文件 + 完整匹配的具体假样例」逐条豁免（AND：路径和内容都对得上才放行）；
+# tests/ 里新增的其他字符串、别的目录里的任何命中，都照常报。
+title = "个人助手模板"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "tests/test_push_guard.py：假 AWS key（顺序字母），验证推送闸能拦"
+condition = "AND"
+paths = ['''^tests/test_push_guard\.py$''']
+regexes = ['''^AKIAABCDEFGHIJKLMNOP$''']
+
+[[allowlists]]
+description = "tests/console_support.py：假 token=…、假 GitHub PAT（字母数字交替的构造串）"
+condition = "AND"
+paths = ['''^tests/console_support\.py$''']
+regexes = [
+  '''^abc123def456$''',
+  '''^ghp_A1b2C3d4E5f6G7h8I9j0K1l2M3n4O5p6Q7r8$''',
+]
+
+[[allowlists]]
+description = "tests/test_console_contract.py：顺序字母假 AWS key"
+condition = "AND"
+paths = ['''^tests/test_console_contract\.py$''']
+regexes = [
+  '''^AKIAABCDEFGHIJKLMNOP$''',
+]

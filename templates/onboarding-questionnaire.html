@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>首次使用问卷 · 个人助手模板</title>
+<style>
+/* 自包含页面：不加载任何外部资源，双击或 file:// 打开即可用（onboarding skill 的 A 步） */
+:root {
+  --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-16: 16px; --fs-20: 20px; --fs-28: 28px;
+  --sp-4: 4px; --sp-8: 8px; --sp-12: 12px; --sp-16: 16px; --sp-24: 24px; --sp-32: 32px;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+  --font: "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Mono", ui-monospace, Consolas, monospace;
+  --bg: #f4f3ef; --panel: #ffffff; --panel-2: #f7f6f2; --line: #e6e3db; --text: #1f1e1b; --muted: #6f6b63; --faint: #9a968d;
+  --brand: #2f6f5e; --brand-soft: #e2efe9; --brand-text: #ffffff;
+  --red: #c2410c; --red-soft: #fdebdf; --orange: #b7791f; --orange-soft: #fbf1d9; --blue: #2563eb; --blue-soft: #e3ebfd;
+  --gray-soft: #eeece6;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141413; --panel: #1d1d1b; --panel-2: #242421; --line: #33322e; --text: #ecebe6; --muted: #a6a29a; --faint: #78756e;
+  --brand: #6cc3a8; --brand-soft: #1f3530; --brand-text: #10201b;
+  --red: #fb8a5c; --red-soft: #3a2216; --orange: #f2c15b; --orange-soft: #392e15; --blue: #8fb1ff; --blue-soft: #1c2742;
+  --gray-soft: #2a2a27; --shadow: 0 1px 2px rgba(0,0,0,.3); } }
+:root[data-theme="dark"] {
+  --bg: #141413; --panel: #1d1d1b; --panel-2: #242421; --line: #33322e; --text: #ecebe6; --muted: #a6a29a; --faint: #78756e;
+  --brand: #6cc3a8; --brand-soft: #1f3530; --brand-text: #10201b;
+  --red: #fb8a5c; --red-soft: #3a2216; --orange: #f2c15b; --orange-soft: #392e15; --blue: #8fb1ff; --blue-soft: #1c2742;
+  --gray-soft: #2a2a27; --shadow: 0 1px 2px rgba(0,0,0,.3); }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 400 var(--fs-14)/1.6 var(--font); font-variant-numeric: tabular-nums; }
+h1 { font-size: var(--fs-28); line-height: 1.25; } h2 { font-size: var(--fs-20); line-height: 1.35; } h3 { font-size: var(--fs-16); }
+small, .small { font-size: var(--fs-12); }
+code, pre, kbd { font-family: var(--mono); font-size: var(--fs-13); }
+a { color: var(--brand); }
+header { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+.bar { max-width: 900px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.bar h1 { font-size: var(--fs-20); margin: 0; font-weight: 650; }
+.progress { flex: 1; min-width: 120px; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: var(--fs-13); }
+.track { flex: 1; height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; background: var(--brand); width: 0; transition: width .2s; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+button {
+  font: inherit; font-size: var(--fs-14); cursor: pointer; border-radius: var(--r-sm);
+  border: 1px solid var(--line); background: var(--panel); color: var(--text); padding: 6px 12px;
+}
+button:hover { border-color: var(--brand); }
+button.primary { background: var(--brand); color: var(--brand-text); border-color: var(--brand); }
+button.ghost { background: transparent; }
+.wrap { max-width: 900px; margin: 0 auto; padding: 16px; }
+.privacy {
+  background: var(--orange-soft); color: var(--text); border: 1px solid var(--orange);
+  border-radius: var(--r-md); padding: 10px 14px; margin-bottom: 16px; font-size: var(--fs-13);
+}
+.privacy b { color: var(--red); }
+.intro { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 24px; box-shadow: var(--shadow); }
+.intro ol { margin: 8px 0 0; padding-left: 20px; }
+.intro li { margin: 4px 0; }
+nav.secs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 16px; }
+nav.secs a { padding: 4px 10px; border-radius: var(--r-pill); background: var(--panel-2); color: var(--text); text-decoration: none; font-size: var(--fs-13); }
+nav.secs a:hover { outline: 1px solid var(--brand); }
+section { margin-bottom: 32px; scroll-margin-top: 80px; }
+section > h2 { font-size: var(--fs-20); margin: 0 0 4px; }
+.sec-meta { color: var(--muted); font-size: var(--fs-13); margin-bottom: 12px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.card.answered { border-left: 3px solid var(--brand); }
+.card.skipped { opacity: .62; }
+.q-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.q { font-weight: 600; overflow-wrap: anywhere; }
+.qid { color: var(--muted); font-size: var(--fs-12); font-family: var(--mono); margin-right: 6px; font-weight: 400; }
+.state { font-size: var(--fs-12); color: var(--muted); white-space: nowrap; }
+.state.ok { color: var(--brand); }
+.hint { color: var(--muted); font-size: var(--fs-13); margin-top: 2px; }
+.rec-line { margin-top: 8px; font-size: var(--fs-13); background: var(--brand-soft); border-radius: var(--r-sm); padding: 5px 10px; }
+.rec-line b { color: var(--brand); font-weight: 600; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip { border-radius: var(--r-pill); padding: 5px 12px; font-size: var(--fs-14); background: var(--panel-2); border: 1px solid transparent; }
+.chip.rec { border-color: var(--brand); border-style: dashed; }
+.chip[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--text); font-weight: 600; border-style: solid; }
+.chip .rtag { font-size: var(--fs-12); font-weight: 600; color: var(--brand); margin-left: 6px; }
+.multi-note { font-size: var(--fs-12); color: var(--muted); margin-top: 6px; }
+textarea, input[type=text] {
+  width: 100%; font: inherit; font-size: var(--fs-14); color: var(--text); background: var(--bg);
+  border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 10px; margin-top: 10px; resize: vertical;
+}
+textarea:focus, input[type=text]:focus { outline: 2px solid var(--brand); outline-offset: -1px; border-color: transparent; }
+.row { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.link { background: none; border: none; padding: 0; color: var(--muted); font-size: var(--fs-13); text-decoration: underline; text-underline-offset: 2px; }
+.link:hover { color: var(--brand); }
+.by-rec { font-size: var(--fs-12); color: var(--brand); margin-left: 6px; }
+dialog { width: min(760px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: var(--r-md); background: var(--panel); color: var(--text); padding: 0; }
+dialog::backdrop { background: rgba(0,0,0,.4); }
+.dlg-body { padding: 16px; }
+.dlg-body h3 { margin: 0 0 8px; font-size: var(--fs-16); }
+.dlg-body textarea { height: 50vh; font-family: var(--mono); font-size: var(--fs-13); }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 8px 14px; border-radius: var(--r-sm); font-size: var(--fs-14); opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: var(--fs-12); padding: 8px 0 32px; }
+@media (max-width: 700px) { .bar h1 { width: 100%; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>首次使用问卷</h1>
+    <div class="progress"><div class="track"><div class="fill" id="fill"></div></div><span id="ptext">0 / 0</span></div>
+    <div class="actions">
+      <button id="btnRec" class="hidden" title="只填还没回答、也没跳过的题；填完还能改">其余按推荐填</button>
+      <button class="primary" id="btnExport">导出回答</button>
+      <button class="ghost" id="btnTheme" title="切换主题">主题</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="privacy">
+    <b>不要填真实密码、密钥、银行卡号、身份证号。</b>这份问卷只在你的浏览器本地保存（localStorage），不上传任何服务器；
+    导出的文本只发给你自己的助手。回答会写进你自己的仓库，<b>个人信息只存在本地仓库</b>，所以那个仓库要保持 private。
+  </div>
+
+  <div class="intro">
+    <h3 style="margin:0">三步，5 分钟</h3>
+    <ol>
+      <li><b>答题</b>：每题都给了一个推荐答案和理由。没意见的直接点「其余按推荐填」，想改的点选项或写几句；不想答的点「暂不回答」，之后还能补。</li>
+      <li><b>导出</b>：点右上角「导出回答」，复制整段（或下载 .md）。</li>
+      <li><b>交给助手</b>：在仓库目录开一个 Claude Code 会话，把导出的内容粘进去，说「按 onboarding 引导处理这份问卷」。</li>
+    </ol>
+    <div class="hint" style="margin-top:8px">助手会把这些回答写进 <code>profile/about.md</code>、<code>preferences.md</code>、<code>now.md</code>，按需建项目和领域档案，然后问你 3–5 件眼下要做的事，写进 <code>todo.md</code>。</div>
+  </div>
+
+  <nav class="secs" id="nav"></nav>
+  <main id="main"></main>
+  <footer>回答只存在这台设备的浏览器里；换电脑或清了浏览器数据要重新答。导出内容里没有密码类字段，也请不要自己往里加。</footer>
+</div>
+
+<dialog id="dlg">
+  <div class="dlg-body">
+    <h3>导出为 Markdown</h3>
+    <div class="row" style="margin-top:0">
+      <label><input type="checkbox" id="onlyNew" checked> 只导出上次导出后新增或修改的回答</label>
+    </div>
+    <textarea id="out" readonly></textarea>
+    <div class="row">
+      <button class="primary" id="btnCopy">复制并标记为已导出</button>
+      <button id="btnDownload">下载 .md</button>
+      <span style="flex:1"></span>
+      <button class="link" id="btnReset">清空全部回答</button>
+      <button id="btnClose">关闭</button>
+    </div>
+    <div class="hint" style="margin-top:8px">复制后粘贴到 Claude Code 对话里，助手会按 <code>.claude/skills/onboarding/SKILL.md</code> 的 B、C 两步并入。</div>
+  </div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+/*
+ * 首次使用问卷题库。维护规则（见 .claude/skills/onboarding/SKILL.md）：
+ * - id 一经使用不复用、不改含义；改题干可以，改含义就换新 id
+ * - type: single 单选 / multi 多选 / text 文本；other: true 带「其他」输入框
+ * - rec 推荐答案（单选写选项、多选写数组、文本写建议说法）+ why 一句话理由
+ * - target 写这个分区最终落到哪个文件，导出时会带上，方便助手并入
+ * - 20 题以内；多了没人填，少了 profile 还是空的
+ */
+const SECTIONS = [
+  { id: "who", title: "我是谁", target: "profile/about.md（身份、工作）",
+    desc: "身份、工作、角色。助手靠这些判断事情的轻重和用词。" },
+  { id: "doing", title: "我在做什么", target: "profile/about.md · projects/ · areas/",
+    desc: "项目、领域、目标。这些会变成项目档案和领域档案。" },
+  { id: "work", title: "我怎么工作", target: "profile/preferences.md",
+    desc: "工作时间、沟通风格、偏好、常用工具。你说了助手就照做。" },
+  { id: "life", title: "我的生活与健康", target: "areas/life/ · private/health/ · areas/work/（固定日程）",
+    desc: "作息、运动、饮食、要提醒的事。健康只在你说的时候才记。" },
+];
+
+const Q = [
+  // ---------- 我是谁 ----------
+  { id: "w01", s: "who", type: "text", q: "我该怎么称呼你？", hint: "对话里助手怎么叫你",
+    rec: "用我的名字或昵称；不方便写就用「你」", why: "称呼对了，之后每句话都自然" },
+  { id: "w02", s: "who", type: "text", q: "你的身份和职业是什么？",
+    rec: "一句话，例如：产品经理，做 To C 业务", why: "用词、举例、判断轻重都靠它" },
+  { id: "w03", s: "who", type: "text", q: "你现在的工作职责大致是什么？", hint: "主要在做的事、负责的范围",
+    rec: "两三句：负责什么、跟谁配合", why: "决定哪些事算你的、该怎么帮你拆" },
+  { id: "w04", s: "who", type: "text", q: "你在哪个城市、什么时区？", hint: "影响提醒时间和日程",
+    rec: "城市 + 时区，例如：上海（UTC+8）", why: "早上提醒、周会时间都按这个算" },
+  { id: "w05", s: "who", type: "text", q: "你的 GitHub 账号和组织？", hint: "没有组织写「无」",
+    rec: "GitHub 用户名；有组织再写组织名", why: "注册表和对外 PR / issue 署名会用；不想写可以空着" },
+
+  // ---------- 我在做什么 ----------
+  { id: "d01", s: "doing", type: "text", q: "现在最重要的 1–3 个项目是什么？", hint: "每个项目一句话：叫什么、在做什么",
+    rec: "工作项目写一到两个，自己的事再写一个", why: "助手会把它们建成 projects/<slug>/ 档案，之后进展都记在那里" },
+  { id: "d02", s: "doing", type: "text", q: "这些项目对应哪些仓库、在哪开发？",
+    rec: "仓库名或本地路径；还没整理的先写名字", why: "派发任务时要知道去哪开工作区" },
+  { id: "d03", s: "doing", type: "text", q: "未来半年最想达成的一个目标？", hint: "尽量写成能检查的结果",
+    rec: "例如：上线 X，并稳定跑三个月", why: "计划、早间建议都会对齐这个目标" },
+  { id: "d04", s: "doing", type: "multi", q: "想长期跟踪哪些领域？", other: true,
+    opts: ["工作", "学习", "健康", "财务", "生活", "家庭", "兴趣"], rec: ["工作", "生活"],
+    why: "每个领域建一份 areas/<slug>/ 档案，只在该话题出现时才用到" },
+  { id: "d05", s: "doing", type: "text", q: "现在最卡的一件事是什么？",
+    rec: "一件具体的事，或者写「暂时没有」", why: "第一次对话就能从这件卡点开始推进，而不是泛泛而谈" },
+
+  // ---------- 我怎么工作 ----------
+  { id: "k01", s: "work", type: "single", q: "你一般什么时间工作？",
+    opts: ["工作日 9–18 点", "弹性，主要白天", "夜里为主", "不固定"], rec: "弹性，主要白天",
+    why: "决定早间建议和提醒放在几点" },
+  { id: "k02", s: "work", type: "single", q: "回复一般写多长？",
+    opts: ["尽量短，只给结论", "适中：结论 + 关键理由", "详细：完整分析过程", "看问题大小决定"], rec: "看问题大小决定",
+    why: "按问题大小给篇幅，最不容易出错；嫌啰嗦随时再改" },
+  { id: "k03", s: "work", type: "single", q: "助手拿不准你的意图时，希望它怎么做？",
+    opts: ["直接问我", "按合理假设先做完，再说明假设", "小事先做，大事先问"], rec: "小事先做，大事先问",
+    why: "既不打断你，也不会在要紧事上自作主张" },
+  { id: "k04", s: "work", type: "multi", q: "哪些事必须先问你？", other: true,
+    opts: ["对外发布 / 推送", "花钱", "删除数据", "改目标或验收标准", "账号与权限"],
+    rec: ["对外发布 / 推送", "删除数据", "花钱"], why: "这几类做错了不好挽回，默认先问" },
+  { id: "k05", s: "work", type: "multi", q: "平时用哪些 AI agent 工具？", other: true,
+    opts: ["Claude Code", "Codex", "OpenCode", "Cursor", "Orca"], rec: ["Claude Code"],
+    why: "派发时按你有的工具选执行器，没有的不会推荐" },
+  { id: "k06", s: "work", type: "single", q: "日常对话里，助手主动记录到什么程度？",
+    opts: ["积极：聊到就记", "只记明确的事实和进展", "只在我说「记一下」时记"], rec: "积极：聊到就记",
+    why: "记多了可以删，记少了补不回来；不想记的随时说「这个别记」" },
+
+  // ---------- 我的生活与健康 ----------
+  { id: "l01", s: "life", type: "single", q: "平时几点睡、几点起？",
+    opts: ["23 点前睡，7 点左右起", "24 点左右睡，8 点左右起", "更晚，睡够就行", "不固定"], rec: "24 点左右睡，8 点左右起",
+    why: "影响提醒时间和精力判断；不合适就选「不固定」" },
+  { id: "l02", s: "life", type: "single", q: "一周运动几次？",
+    opts: ["基本不运动", "1–2 次", "3–4 次", "5 次以上"], rec: "3–4 次",
+    why: "有运动才会用到训练记录和饮水跟踪，不然不打扰你" },
+  { id: "l03", s: "life", type: "text", q: "饮食上有什么偏好或限制？", hint: "忌口、过敏、想控制的东西",
+    rec: "有就写，没有写「没有」", why: "定饮食目标、记三餐时会用到；不想填就点「暂不回答」" },
+  { id: "l04", s: "life", type: "multi", q: "希望助手提醒你哪些事？", other: true,
+    opts: ["重要日期（生日、纪念日）", "固定日程 / 会议", "用药或饮水", "订阅续费", "每周复盘"],
+    rec: ["重要日期（生日、纪念日）", "每周复盘"], why: "会写进 areas/life 和固定日程表，开场卡片提前提醒" },
+];
+
+// ---------- 状态 ----------
+const STORE_KEY = "onboarding-answers";
+let state = { answers: {}, lastExport: 0, theme: "" };
+try { const raw = localStorage.getItem(STORE_KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch (e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+const live = Q.filter(q => !q.retired);
+const secOf = id => SECTIONS.find(s => s.id === id) || {};
+const recOf = q => q.rec == null ? null : (q.type === "multi" ? [].concat(q.rec) : q.rec);
+const isRec = (q, o) => { const r = recOf(q); return Array.isArray(r) ? r.includes(o) : r === o; };
+const ans = id => state.answers[id];
+function hasValue(a) {
+  if (!a || a.skip) return false;
+  if (Array.isArray(a.v) && a.v.length) return true;
+  if (typeof a.v === "string" && a.v.trim()) return true;
+  return !!(a.other && a.other.trim());
+}
+function touch(id, patch) {
+  const prev = state.answers[id] || {};
+  const byRec = "byRec" in patch ? patch.byRec : ("v" in patch || "other" in patch) ? false : !!prev.byRec;
+  const a = Object.assign({ v: null, other: "", note: "", skip: false }, prev, patch, { byRec, t: Date.now() });
+  state.answers[id] = a; save(); refreshCard(id); refreshProgress();
+}
+
+// ---------- 渲染 ----------
+const main = document.getElementById("main"), nav = document.getElementById("nav");
+let onlyUnanswered = false;
+
+function el(tag, attrs, ...kids) {
+  const n = document.createElement(tag);
+  for (const k in attrs || {}) {
+    if (k === "class") n.className = attrs[k];
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), attrs[k]);
+    else n.setAttribute(k, attrs[k]);
+  }
+  for (const c of kids) if (c != null) n.append(c);
+  return n;
+}
+
+function cardFor(q) {
+  const a = ans(q.id) || {};
+  const answered = hasValue(a);
+  const card = el("div", { class: "card" + (answered ? " answered" : "") + (a.skip ? " skipped" : ""), id: "q-" + q.id });
+  const stateText = a.skip ? "已跳过" : answered ? "已答" : "未答";
+  card.append(el("div", { class: "q-head" },
+    el("div", { class: "q" }, el("span", { class: "qid" }, q.id), q.q),
+    el("span", { class: "state" + (answered ? " ok" : "") }, stateText, answered && a.byRec ? el("span", { class: "by-rec" }, "按推荐") : null)));
+  if (q.hint) card.append(el("div", { class: "hint" }, q.hint));
+  const rec = recOf(q);
+  if (rec != null) card.append(el("div", { class: "rec-line" }, el("b", {}, "推荐："),
+    Array.isArray(rec) ? rec.join("、") : rec, q.why ? "　理由：" + q.why : ""));
+
+  if (q.type === "text") {
+    const ta = el("textarea", { rows: "2", placeholder: rec != null ? "推荐：" + rec : "写点什么…" });
+    ta.value = typeof a.v === "string" ? a.v : "";
+    ta.addEventListener("change", () => touch(q.id, { v: ta.value, skip: false }));
+    card.append(ta);
+  } else {
+    const multi = q.type === "multi";
+    const cur = multi ? (Array.isArray(a.v) ? a.v : []) : a.v;
+    const opts = el("div", { class: "opts" });
+    for (const o of q.opts) {
+      const on = multi ? cur.includes(o) : cur === o;
+      const chip = el("button", { class: "chip" + (isRec(q, o) ? " rec" : ""), "aria-pressed": String(on), type: "button", onclick: () => {
+        if (multi) {
+          const next = cur.includes(o) ? cur.filter(x => x !== o) : cur.concat(o);
+          touch(q.id, { v: next, skip: false });
+        } else {
+          touch(q.id, { v: cur === o ? null : o, skip: false });
+        }
+      } }, o, isRec(q, o) ? el("span", { class: "rtag" }, "推荐") : null);
+      opts.append(chip);
+    }
+    card.append(opts);
+    if (multi) card.append(el("div", { class: "multi-note" }, "可多选"));
+    if (q.other) {
+      const inp = el("input", { type: "text", placeholder: "其他（可选）" });
+      inp.value = a.other || "";
+      inp.addEventListener("change", () => touch(q.id, { other: inp.value, skip: false }));
+      card.append(inp);
+    }
+  }
+
+  const noteOpen = !!(a.note && a.note.trim());
+  const note = el("textarea", { rows: "2", placeholder: "补充说明（可选）", class: noteOpen ? "" : "hidden" });
+  note.value = a.note || "";
+  note.addEventListener("change", () => touch(q.id, { note: note.value }));
+  card.append(note);
+  card.append(el("div", { class: "row" },
+    noteOpen ? null : el("button", { class: "link", type: "button", onclick: () => { note.classList.remove("hidden"); note.focus(); } }, "补充说明"),
+    el("button", { class: "link", type: "button", onclick: () => touch(q.id, { skip: !a.skip }) }, a.skip ? "取消跳过" : "暂不回答")));
+  if (onlyUnanswered && (answered || a.skip)) card.classList.add("hidden");
+  return card;
+}
+
+function refreshCard(id) {
+  const q = live.find(x => x.id === id), old = document.getElementById("q-" + id);
+  if (q && old) {
+    const keep = onlyUnanswered; onlyUnanswered = false;
+    old.replaceWith(cardFor(q)); onlyUnanswered = keep;
+  }
+}
+
+function render() {
+  main.innerHTML = ""; nav.innerHTML = "";
+  for (const s of SECTIONS) {
+    const qs = live.filter(q => q.s === s.id);
+    if (!qs.length) continue;
+    const sec = el("section", { id: "s-" + s.id },
+      el("h2", {}, s.title),
+      el("div", { class: "sec-meta" }, s.desc + "　→ " + s.target));
+    qs.forEach(q => sec.append(cardFor(q)));
+    main.append(sec);
+    nav.append(el("a", { href: "#s-" + s.id }, s.title + "（" + qs.length + "）"));
+  }
+  const f = el("label", { class: "hint", style: "display:flex;gap:6px;align-items:center;margin:0 0 16px" },
+    el("input", { type: "checkbox" }), "只看未答");
+  f.querySelector("input").checked = onlyUnanswered;
+  f.querySelector("input").addEventListener("change", e => { onlyUnanswered = e.target.checked; render(); });
+  nav.after(f);
+  document.getElementById("btnRec").classList.toggle("hidden", !live.some(q => recOf(q) != null));
+  refreshProgress();
+}
+
+function refreshProgress() {
+  const done = live.filter(q => hasValue(ans(q.id)) || (ans(q.id) || {}).skip).length;
+  document.getElementById("fill").style.width = (live.length ? done / live.length * 100 : 0) + "%";
+  document.getElementById("ptext").textContent = done + " / " + live.length;
+}
+
+// ---------- 导出 ----------
+function fmt(q, a) {
+  let v = Array.isArray(a.v) ? a.v.join("、") : (a.v || "");
+  if (a.other && a.other.trim()) v = v ? v + "；其他：" + a.other.trim() : "其他：" + a.other.trim();
+  const lines = ["- [" + q.id + "] " + q.q + " → " + (v || "（只写了补充）") + (a.byRec && hasValue(a) ? "（按推荐）" : "")];
+  if (a.note && a.note.trim()) lines.push("  - 补充：" + a.note.trim().replace(/\n/g, " / "));
+  return lines;
+}
+function buildExport(onlyNew) {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  const stamp = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + " " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  const L = ["# 首次使用问卷回答 " + stamp, "",
+    "> 来自 templates/onboarding-questionnaire.html" + (onlyNew && state.lastExport ? "，只含上次导出后新增或修改的回答" : "") + "。",
+    "> 请按 .claude/skills/onboarding/SKILL.md 的 B、C 两步并入；「（按推荐）」的不算你的结论，写入时标出处。",
+    "> 里面不应该有密码、密钥、银行卡号；如果有，先删掉再发。", ""];
+  let count = 0;
+  const skipped = [];
+  for (const s of SECTIONS) {
+    const rows = [];
+    for (const q of live.filter(x => x.s === s.id)) {
+      const a = ans(q.id);
+      if (!a) continue;
+      if (onlyNew && a.t <= state.lastExport) continue;
+      if (a.skip) { skipped.push(q.id); continue; }
+      if (!hasValue(a) && !(a.note && a.note.trim())) continue;
+      rows.push(...fmt(q, a)); count++;
+    }
+    if (rows.length) L.push("## " + s.title + "（→ " + s.target + "）", "", ...rows, "");
+  }
+  if (skipped.length) L.push("## 暂不回答", "", skipped.join("、"), "");
+  if (!count && !skipped.length) L.push("_没有可导出的回答。_");
+  return { text: L.join("\n"), count, stamp };
+}
+
+const dlg = document.getElementById("dlg"), out = document.getElementById("out"), onlyNew = document.getElementById("onlyNew");
+function refreshExport() { out.value = buildExport(onlyNew.checked).text; }
+document.getElementById("btnExport").onclick = () => { refreshExport(); dlg.showModal(); };
+onlyNew.onchange = refreshExport;
+document.getElementById("btnClose").onclick = () => dlg.close();
+document.getElementById("btnCopy").onclick = async () => {
+  try { await navigator.clipboard.writeText(out.value); }
+  catch (e) { out.select(); document.execCommand("copy"); }
+  state.lastExport = Date.now(); save();
+  toast("已复制，粘贴到助手会话里即可");
+};
+document.getElementById("btnDownload").onclick = () => {
+  const { stamp } = buildExport(onlyNew.checked);
+  const blob = new Blob([out.value], { type: "text/markdown;charset=utf-8" });
+  const a = el("a", { href: URL.createObjectURL(blob), download: "onboarding-" + stamp.replace(/[ :]/g, "-") + ".md" });
+  document.body.append(a); a.click(); a.remove();
+  state.lastExport = Date.now(); save();
+};
+document.getElementById("btnReset").onclick = () => {
+  if (confirm("清空全部回答？这个操作不能撤销。")) { state.answers = {}; state.lastExport = 0; save(); dlg.close(); render(); }
+};
+
+// ---------- 主题 ----------
+function applyTheme() { if (state.theme) document.documentElement.dataset.theme = state.theme; else delete document.documentElement.dataset.theme; }
+document.getElementById("btnTheme").onclick = () => {
+  const dark = state.theme ? state.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  state.theme = dark ? "light" : "dark"; save(); applyTheme();
+};
+
+// ---------- 其余按推荐填 ----------
+document.getElementById("btnRec").onclick = () => {
+  const todo = live.filter(q => recOf(q) != null && !hasValue(ans(q.id)) && !(ans(q.id) || {}).skip);
+  if (!todo.length) return toast("没有可以按推荐填的题了");
+  if (!confirm("按推荐填 " + todo.length + " 道还没回答的题？填完还能改，导出时会标「按推荐」。")) return;
+  const now = Date.now();
+  for (const q of todo) state.answers[q.id] = Object.assign({ v: null, other: "", note: "", skip: false }, ans(q.id), { v: recOf(q), byRec: true, t: now });
+  save(); render(); toast("已按推荐填了 " + todo.length + " 题");
+};
+
+let tt;
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 1800); }
+
+applyTheme();
+render();
+</script>
+</body>
+</html>

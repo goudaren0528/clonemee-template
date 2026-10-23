@@ -1,0 +1,78 @@
+# 记录类型 → 模板 总表（由 tools/build_index.py 生成 templates/INDEX.md，并做覆盖检查）
+# 规则：写任何记录之前，先在这里找到类型，读对应模板，再按模板写。没有对应类型的新记录，先建模板（你同意）再写。
+# mode：新建 = 每次新建一个文件；追加 = 往已有文件末尾或指定小节加条目；改写 = 持续更新同一个文件
+# template 以 entries.md# 开头的，是「条目模板」（往已有文件里加的一条），见 templates/entries.md 对应小节
+
+types:
+  # ---------- 关于我 ----------
+  - { name: 身份档案, template: "单例：profile/about.md 自身结构", path: profile/about.md, mode: 改写 }
+  - { name: 首次使用问卷, template: "onboarding-questionnaire.html（示例，可复制后改题和推荐）", path: templates/onboarding-questionnaire.html, mode: "新建（onboarding skill · A 步）" }
+  - { name: 偏好条目, template: "entries.md#偏好", path: profile/preferences.md, mode: 追加 }
+  - { name: 当前状态, template: "单例：profile/now.md 自身结构", path: profile/now.md, mode: 改写 }
+  - { name: 助手人设, template: "单例：profile/persona.md 自身结构", path: profile/persona.md, mode: 改写 }
+  - { name: 人设风格条目, template: "entries.md#人设风格", path: "profile/persona.md 的「风格记录」", mode: 追加 }
+
+  # ---------- 计划（核心） ----------
+  - { name: 长期目标, template: "单例：plans/goals.md 自身结构", path: plans/goals.md, mode: 改写 }
+  - { name: 计划, template: plan.md, path: "plans/YYYY-MM-DD-<slug>.md", mode: 新建 }
+  - { name: 计划任务行, template: "entries.md#计划任务", path: "plans/*.md 的「任务」一节", mode: 追加 }
+  - { name: 周计划, template: weekly-plan.md, path: "plans/weekly/YYYY-Www.md", mode: 新建 }
+  - { name: 当日计划, template: daily-plan.md, path: "plans/daily/YYYY-MM-DD.md", mode: 新建 }
+  - { name: 需求澄清问卷, template: "pm-clarify skill（题目清单 YAML → python tools/qform.py 生成 HTML）", path: "plans/prd/<slug>/clarify-NN.yaml / .html", mode: 新建 }
+  - { name: 需求要点, template: "pm-clarify skill", path: "plans/prd/<slug>/requirements.md", mode: 改写 }
+  - { name: PRD, template: "pm-prd skill", path: "plans/prd/<slug>/prd.md", mode: 改写 }
+  - { name: 原型, template: "pm-prd skill", path: "plans/prd/<slug>/prototype/NN-<屏名>.html", mode: 新建 }
+  - { name: PRD 评审页, template: "工具生成：python tools/prd_html.py", path: "plans/prd/<slug>/review.html", mode: 新建 }
+  - { name: 执行方案, template: exec-plan.md, path: "plans/exec/YYYY-MM-DD-<slug>.md", mode: 改写（规划 Agent 写；你确认后 status active，就是跟进 Agent 的授权） }
+  - { name: 澄清回答 / 评审意见, template: "你导出的原文，不改动", path: "plans/prd/<slug>/answers-NN.md · comments-NN.md", mode: 新建 }
+  - { name: 以后再说条目, template: "entries.md#以后再说", path: plans/someday.md, mode: 追加 }
+  - { name: 零散待办条目, template: "entries.md#todo", path: todo.md, mode: 追加 }
+
+  # ---------- 经历与档案 ----------
+  - { name: 日记文件, template: journal.md, path: "journal/YYYY/MM/YYYY-MM-DD.md", mode: 新建 }
+  - { name: 日记条目, template: "entries.md#journal", path: "journal/YYYY/MM/YYYY-MM-DD.md", mode: 追加 }
+  - { name: 项目档案, template: project.md, path: "projects/<slug>/index.md", mode: 改写 }
+  - { name: 领域档案, template: area.md, path: "areas/<slug>/index.md · private/health/index.md", mode: 改写 }
+  - { name: 时间线行, template: "entries.md#时间线", path: "项目 / 领域档案的「时间线」", mode: 追加 }
+  - { name: 决策, template: decision.md, path: "decisions/YYYY-MM-DD-<slug>.md", mode: 新建 }
+  - { name: 会议纪要, template: meeting.md, path: "meetings/YYYY-MM-DD-<topic>.md", mode: 新建 }
+  - { name: 协作者, template: person.md, path: "people/<name>.md", mode: 改写 }
+
+  # ---------- 健康与财务（private/） ----------
+  - { name: 训练记录, template: "entries.md#训练记录", path: private/health/training-log.md, mode: 追加 }
+  - { name: 训练计划调整, template: "entries.md#训练计划", path: "private/health/index.md 的「训练计划」", mode: 改写 }
+  - { name: 饮水记录, template: "entries.md#饮水", path: private/health/water-log.md, mode: 追加 }
+  - { name: 体检记录, template: "entries.md#体检记录", path: "private/health/index.md 的「体检记录」", mode: 追加 }
+  - { name: 财务条目, template: "entries.md#财务", path: private/finance/index.md, mode: 追加 }
+
+  # ---------- 回顾与报告 ----------
+  - { name: 周报月报, template: review.md, path: "reviews/YYYY-Www.md · reviews/YYYY-MM.md", mode: 新建 }
+  - { name: 进展汇报, template: progress-report.md, path: "reviews/progress/YYYY-MM-DD-<范围>.md", mode: 新建 }
+  - { name: 夜间巡检报告, template: progress-report.md, path: "reviews/nightly/YYYY-MM-DD.md", mode: 新建 }
+  - { name: 待回复汇报, template: report-cards.md, path: "对话里回复，默认不落文件；你说「存一下」时 reviews/progress/YYYY-MM-DD-cards.md", mode: 新建（report-cards skill：卡片在前、进展表在后） }
+  - { name: 汇报卡片, template: "entries.md#汇报卡片", path: "待回复汇报、进展汇报、早间建议确认、待处理消息的回复里，一件要你回复的事一张", mode: 追加 }
+  - { name: 事情盘点表, template: "工具生成：python tools/inventory.py --write", path: "reviews/inventory/YYYY-Www.md", mode: 新建 }
+  - { name: 采集草稿, template: "工具生成：python tools/collect.py / nightly.py", path: "inbox/", mode: 新建 }
+
+  - { name: 派发记录, template: run.md, path: "runs/YYYY-MM-DD-<计划>-<任务>.md", mode: 新建（跟进 Agent 用 tools/follow.py 追加监督 / 决策 / 验收，按授权派生子任务 <父>-S<n>.md） }
+  - { name: 待处理清单, template: pending.md, path: runs/pending.md, mode: "追加（tools/notify.py 写入；主会话 notify.py done 标已处理）" }
+  - { name: 设备派发快照, template: "工具生成：python tools/sweep.py --snapshot", path: "runs/status/<设备指纹>.md", mode: 改写（早间建议、夜间巡检会跑） }
+  - { name: 指挥台回复分表, template: replies.md, path: runs/replies.md, mode: "追加（本地通道 / tools/notify.py 写入；forward / ack / handled 改状态；第一次写入时按模板生成）" }
+  - { name: 交付看板, template: run-delivery.md, path: "runs/YYYY-MM-DD-<项目>-<需求>.md", mode: 新建（tools/delivery.py 创建，跟进 Agent 维护） }
+  - { name: 实现计划, template: impl-plan.md, path: "<项目仓库>/docs/delivery/<需求>/impl-plan.md", mode: 新建（dev-plan skill） }
+  - { name: 验收用例, template: cases.md, path: "<项目仓库>/docs/delivery/<需求>/cases.md", mode: 新建（accept-cases skill） }
+  - { name: 工作包进度, template: package.md, path: "<项目仓库>/docs/delivery/<需求>/packages/P<n>.md", mode: 改写（dev-build / dev-fix skill） }
+  - { name: 审查报告, template: review-report.md, path: "<项目仓库>/docs/delivery/<需求>/reviews/P<n>-r<N>.md", mode: 新建（accept-review skill） }
+  - { name: 测试报告, template: test-report.md, path: "<项目仓库>/docs/delivery/<需求>/acceptance/report-r<N>.md", mode: 新建（accept-test skill） }
+
+  # ---------- 记忆 ----------
+  - { name: 会话记忆, template: session.md, path: "memory/sessions/YYYY-MM-DD-<会话ID前8位>.md", mode: 新建 }
+  - { name: 记忆卡, template: memory-card.md, path: "memory/long/M-xxxx-<slug>.md", mode: 新建 }
+  - { name: 术语, template: "entries.md#术语", path: memory/glossary.md, mode: 追加 }
+
+  # ---------- 规范与配置 ----------
+  - { name: Agent 角色, template: agent-role.md, path: "agents/<slug>.md", mode: 改写 }
+  - { name: playbook, template: playbook.md, path: "playbooks/<slug>.md", mode: 新建 }
+  - { name: skill, template: skill.md, path: ".claude/skills/<name>/SKILL.md", mode: 新建 }
+  - { name: 规范变更记录, template: "entries.md#规范变更", path: playbooks/README.md, mode: 追加 }
+  - { name: 工作面注册, template: "格式见 playbooks/registry.md", path: registry/projects.yaml, mode: 改写 }

@@ -1,0 +1,38 @@
+/* assistant 视觉规范 v1
+   产品 Agent 的问卷、原型、评审页共用：tools/qform.py、tools/prd_html.py 生成页面时把这一段原样内嵌；
+   原型（pm-prd skill）把这一段复制进自己的 <style> 开头，再只用这里的变量写样式。
+   - 字号只有六级：12 辅助（标签、角标、时间）· 13 说明（提示、次要信息）· 14 正文（段落、按钮、输入框）
+     · 16 小标题（卡片标题、h3）· 20 标题（页面标题、h2）· 28 大标题和大数字（h1、指标数字）
+   - 间距用 4 的倍数：4 / 8 / 12 / 16 / 24 / 32；圆角三档：8 小件（按钮、输入框）· 12 卡片 · 16 大面板，胶囊用 999
+   - 颜色只用下面的变量，浅色深色两套都要能看；状态色：红 = 要处理 / 失败，橙 = 注意 / 卡住，蓝 = 进行中 / 信息，品牌绿 = 通过 / 完成
+   - 导航、标题、按钮不用 emoji；状态用文字、颜色、图形表达 */
+:root {
+  --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-16: 16px; --fs-20: 20px; --fs-28: 28px;
+  --sp-4: 4px; --sp-8: 8px; --sp-12: 12px; --sp-16: 16px; --sp-24: 24px; --sp-32: 32px;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+  --font: "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Mono", ui-monospace, Consolas, monospace;
+  --bg: #f4f3ef; --panel: #ffffff; --panel-2: #f7f6f2; --line: #e6e3db; --text: #1f1e1b; --muted: #6f6b63; --faint: #9a968d;
+  --brand: #2f6f5e; --brand-soft: #e2efe9; --brand-text: #ffffff;
+  --red: #c2410c; --red-soft: #fdebdf; --orange: #b7791f; --orange-soft: #fbf1d9; --blue: #2563eb; --blue-soft: #e3ebfd;
+  --violet: #7c3aed; --violet-soft: #efe7fd; --gray-soft: #eeece6;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141413; --panel: #1d1d1b; --panel-2: #242421; --line: #33322e; --text: #ecebe6; --muted: #a6a29a; --faint: #78756e;
+  --brand: #6cc3a8; --brand-soft: #1f3530; --brand-text: #10201b;
+  --red: #fb8a5c; --red-soft: #3a2216; --orange: #f2c15b; --orange-soft: #392e15; --blue: #8fb1ff; --blue-soft: #1c2742;
+  --violet: #b99cff; --violet-soft: #2a2140; --gray-soft: #2a2a27; --shadow: 0 1px 2px rgba(0,0,0,.3); } }
+:root[data-theme="dark"] {
+  --bg: #141413; --panel: #1d1d1b; --panel-2: #242421; --line: #33322e; --text: #ecebe6; --muted: #a6a29a; --faint: #78756e;
+  --brand: #6cc3a8; --brand-soft: #1f3530; --brand-text: #10201b;
+  --red: #fb8a5c; --red-soft: #3a2216; --orange: #f2c15b; --orange-soft: #392e15; --blue: #8fb1ff; --blue-soft: #1c2742;
+  --violet: #b99cff; --violet-soft: #2a2140; --gray-soft: #2a2a27; --shadow: 0 1px 2px rgba(0,0,0,.3); }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 400 var(--fs-14)/1.6 var(--font); font-variant-numeric: tabular-nums; }
+h1 { font-size: var(--fs-28); line-height: 1.25; } h2 { font-size: var(--fs-20); line-height: 1.35; } h3 { font-size: var(--fs-16); }
+h4, h5, h6 { font-size: var(--fs-14); }
+small, .small { font-size: var(--fs-12); }
+code, pre, kbd { font-family: var(--mono); font-size: var(--fs-13); }
+a { color: var(--brand); }

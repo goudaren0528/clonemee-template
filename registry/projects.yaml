@@ -1,0 +1,54 @@
+# 工作面注册表 —— 采集与派发的唯一源头
+#
+# 三种状态：
+#   tracked    我确认要监控的。【只有这里的条目会被 collect.py 采集】
+#   candidates discover.py 扫到、我还没表态的
+#   ignored    我明确排除的。discover.py 不再提示
+#
+# 铁律：任何东西进 tracked 都必须经我确认，工具不会自动添加。
+# 发现新工作面：python tools/discover.py
+#
+# 一个工作面可以包含多个仓库（比如一套前后端 + CMS）。
+# 本文件不记本地路径——路径因设备而异，登记在 registry/devices/<设备指纹>.yaml，
+# 由 tools/device.py 自动校验和发现。本设备没有克隆的仓库只采 GitHub 侧。
+# repos[].aliases：仓库改名前的旧名，用于匹配旧 remote。
+#
+# 下面 identity 和 tracked 里的示例都是占位符，按你自己的情况改；tracked 一开始留空也能跑。
+
+schema_version: 4
+
+identity:
+  name: <你的称呼>            # 对话里的称呼、对外署名都用它
+  github: <your-github>       # 主 GitHub 账号
+  github_alt: []              # 第二个 GitHub 账号（可选），采集脚本目前只查主账号的 PR
+  orgs: [<your-org>]          # 所在组织（可选）
+  # git log 按这些身份过滤「我的提交」（子串匹配 author name / email）
+  # 只统计自己的账号；agent / bot 身份不计入
+  git_authors:
+    - <your-github>
+    - <your-email>
+
+# =====================================================================
+# tracked —— 我确认要监控的工作面
+# =====================================================================
+tracked: []
+#  - slug: example-project            # 目录名、journal 标签都用它（kebab-case）
+#    name: 示例项目
+#    kind: dev                        # dev / product / infra / ops
+#    role: 主力开发                   # 我在这件事里的角色（可选）
+#    status: active                   # active / paused
+#    note: 一句话说明；有专门 skill 或特殊约定的写在这里（可选）
+#    repos:
+#      - { github: <your-org>/example-app }     # 主仓库
+#      - { github: <your-org>/example-api }     # 同工作面的其他仓库
+#      - { github: <your-org>/renamed-repo, aliases: [<your-org>/old-name] }
+
+# =====================================================================
+# candidates —— 扫到、还没表态的（discover.py 写入或手工记）
+# =====================================================================
+candidates: []
+
+# =====================================================================
+# ignored —— 明确排除，不再提示
+# =====================================================================
+ignored: []

@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>个人偏好问卷</title>
+<style>
+/* ui-tokens:start（tools/ui-tokens.css 的副本，qform.py 生成问卷时会换成最新的） */
+/* assistant 视觉规范 v1
+   产品 Agent 的问卷、原型、评审页共用：tools/qform.py、tools/prd_html.py 生成页面时把这一段原样内嵌；
+   原型（pm-prd skill）把这一段复制进自己的 <style> 开头，再只用这里的变量写样式。
+   - 字号只有六级：12 辅助（标签、角标、时间）· 13 说明（提示、次要信息）· 14 正文（段落、按钮、输入框）
+     · 16 小标题（卡片标题、h3）· 20 标题（页面标题、h2）· 28 大标题和大数字（h1、指标数字）
+   - 间距用 4 的倍数：4 / 8 / 12 / 16 / 24 / 32；圆角三档：8 小件（按钮、输入框）· 12 卡片 · 16 大面板，胶囊用 999
+   - 颜色只用下面的变量，浅色深色两套都要能看；状态色：红 = 要处理 / 失败，橙 = 注意 / 卡住，蓝 = 进行中 / 信息，品牌绿 = 通过 / 完成
+   - 导航、标题、按钮不用 emoji；状态用文字、颜色、图形表达 */
+:root {
+  --fs-12: 12px; --fs-13: 13px; --fs-14: 14px; --fs-16: 16px; --fs-20: 20px; --fs-28: 28px;
+  --sp-4: 4px; --sp-8: 8px; --sp-12: 12px; --sp-16: 16px; --sp-24: 24px; --sp-32: 32px;
+  --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+  --font: "Segoe UI", "Microsoft YaHei UI", "PingFang SC", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Mono", ui-monospace, Consolas, monospace;
+  --bg: #f4f3ef; --panel: #ffffff; --panel-2: #f7f6f2; --line: #e6e3db; --text: #1f1e1b; --muted: #6f6b63; --faint: #9a968d;
+  --brand: #2f6f5e; --brand-soft: #e2efe9; --brand-text: #ffffff;
+  --red: #c2410c; --red-soft: #fdebdf; --orange: #b7791f; --orange-soft: #fbf1d9; --blue: #2563eb; --blue-soft: #e3ebfd;
+  --violet: #7c3aed; --violet-soft: #efe7fd; --gray-soft: #eeece6;
+  --shadow: 0 1px 2px rgba(0,0,0,.04), 0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #141413; --panel: #1d1d1b; --panel-2: #242421; --line: #33322e; --text: #ecebe6; --muted: #a6a29a; --faint: #78756e;
+  --brand: #6cc3a8; --brand-soft: #1f3530; --brand-text: #10201b;
+  --red: #fb8a5c; --red-soft: #3a2216; --orange: #f2c15b; --orange-soft: #392e15; --blue: #8fb1ff; --blue-soft: #1c2742;
+  --violet: #b99cff; --violet-soft: #2a2140; --gray-soft: #2a2a27; --shadow: 0 1px 2px rgba(0,0,0,.3); } }
+:root[data-theme="dark"] {
+  --bg: #141413; --panel: #1d1d1b; --panel-2: #242421; --line: #33322e; --text: #ecebe6; --muted: #a6a29a; --faint: #78756e;
+  --brand: #6cc3a8; --brand-soft: #1f3530; --brand-text: #10201b;
+  --red: #fb8a5c; --red-soft: #3a2216; --orange: #f2c15b; --orange-soft: #392e15; --blue: #8fb1ff; --blue-soft: #1c2742;
+  --violet: #b99cff; --violet-soft: #2a2140; --gray-soft: #2a2a27; --shadow: 0 1px 2px rgba(0,0,0,.3); }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 400 var(--fs-14)/1.6 var(--font); font-variant-numeric: tabular-nums; }
+h1 { font-size: var(--fs-28); line-height: 1.25; } h2 { font-size: var(--fs-20); line-height: 1.35; } h3 { font-size: var(--fs-16); }
+h4, h5, h6 { font-size: var(--fs-14); }
+small, .small { font-size: var(--fs-12); }
+code, pre, kbd { font-family: var(--mono); font-size: var(--fs-13); }
+a { color: var(--brand); }
+/* ui-tokens:end */
+header {
+  position: sticky; top: 0; z-index: 5; background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar { max-width: 1100px; margin: 0 auto; padding: 12px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.bar h1 { font-size: var(--fs-20); margin: 0; font-weight: 650; }
+.progress { flex: 1; min-width: 140px; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: var(--fs-13); }
+.track { flex: 1; height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
+.fill { height: 100%; background: var(--brand); width: 0; transition: width .2s; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+button {
+  font: inherit; font-size: var(--fs-14); cursor: pointer; border-radius: var(--r-sm);
+  border: 1px solid var(--line); background: var(--panel); color: var(--text); padding: 6px 12px;
+}
+button:hover { border-color: var(--brand); }
+button.primary { background: var(--brand); color: var(--brand-text); border-color: var(--brand); }
+button.ghost { background: transparent; }
+.layout { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
+.layout > * { min-width: 0; }
+.sec-meta, .q { overflow-wrap: anywhere; }
+nav { position: sticky; top: 72px; align-self: start; }
+nav a {
+  display: flex; justify-content: space-between; gap: 8px; padding: 7px 10px; border-radius: var(--r-sm);
+  color: var(--text); text-decoration: none; font-size: var(--fs-14);
+}
+nav a:hover { background: var(--panel-2); }
+nav a .n { color: var(--muted); font-variant-numeric: tabular-nums; font-size: var(--fs-12); }
+nav a.complete .n { color: var(--brand); }
+.filter { margin-top: 12px; padding: 0 10px; font-size: var(--fs-13); color: var(--muted); display: flex; align-items: center; gap: 6px; }
+section { margin-bottom: 36px; scroll-margin-top: 80px; }
+section > h2 { font-size: var(--fs-20); margin: 0 0 4px; }
+.sec-meta { color: var(--muted); font-size: var(--fs-13); margin-bottom: 14px; }
+.tag { display: inline-block; font-size: var(--fs-12); padding: 1px 8px; border-radius: var(--r-pill); background: var(--orange-soft); color: var(--orange); margin-left: 6px; vertical-align: 2px; }
+.card {
+  background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: 14px 16px; margin-bottom: 12px; box-shadow: var(--shadow);
+}
+.card.answered { border-left: 3px solid var(--brand); }
+.card.skipped { opacity: .62; }
+.q-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+.q { font-weight: 600; }
+.qid { color: var(--muted); font-size: var(--fs-12); font-family: var(--mono); margin-right: 6px; font-weight: 400; }
+.state { font-size: var(--fs-12); color: var(--muted); white-space: nowrap; }
+.state.ok { color: var(--brand); }
+.hint { color: var(--muted); font-size: var(--fs-13); margin-top: 2px; }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.chip {
+  border-radius: var(--r-pill); padding: 5px 12px; font-size: var(--fs-14); background: var(--panel-2); border: 1px solid transparent;
+}
+.chip[aria-pressed="true"] { background: var(--brand-soft); border-color: var(--brand); color: var(--text); font-weight: 600; }
+.multi-note { font-size: var(--fs-12); color: var(--muted); margin-top: 6px; }
+textarea, input[type=text] {
+  width: 100%; font: inherit; font-size: var(--fs-14); color: var(--text); background: var(--bg);
+  border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 10px; margin-top: 10px; resize: vertical;
+}
+textarea:focus, input[type=text]:focus { outline: 2px solid var(--brand); outline-offset: -1px; border-color: transparent; }
+.row { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.link { background: none; border: none; padding: 0; color: var(--muted); font-size: var(--fs-13); text-decoration: underline; text-underline-offset: 2px; }
+.link:hover { color: var(--brand); }
+dialog {
+  width: min(760px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--panel); color: var(--text); padding: 0;
+}
+dialog::backdrop { background: rgba(0,0,0,.4); }
+.dlg-body { padding: 16px; }
+.dlg-body h3 { margin: 0 0 8px; font-size: var(--fs-16); }
+.dlg-body textarea { height: 50vh; font-family: var(--mono); font-size: var(--fs-13); }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 8px 14px; border-radius: var(--r-sm); font-size: var(--fs-14); opacity: 0; transition: opacity .2s; pointer-events: none; }
+.toast.show { opacity: 1; }
+.hidden { display: none !important; }
+.est { color: var(--muted); font-size: var(--fs-13); white-space: nowrap; }
+.tag.must { background: var(--red-soft); color: var(--red); }
+.chip .rtag { font-size: var(--fs-12); font-weight: 600; color: var(--brand); margin-left: 6px; }
+.chip.rec { border-color: var(--brand); border-style: dashed; }
+.chip.rec[aria-pressed="true"] { border-style: solid; }
+.optw { display: inline-flex; align-items: center; gap: 4px; }
+.rec-line { margin-top: 6px; font-size: var(--fs-13); color: var(--text); background: var(--brand-soft); border-radius: var(--r-sm); padding: 4px 10px; }
+.rec-line b { color: var(--brand); font-weight: 600; }
+.by-rec { font-size: var(--fs-12); color: var(--brand); margin-left: 6px; }
+.pvs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 10px; }
+.pvs:empty { display: none; }
+.pv-box { margin: 0; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--bg); padding: 8px; min-width: 0; overflow: auto; }
+.pv-box figcaption { font-size: var(--fs-12); color: var(--muted); margin-bottom: 6px; font-weight: 600; }
+.pv-box svg, .pv-box img { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.pv-box iframe { width: 100%; border: 0; display: block; background: var(--panel); min-height: 120px; }
+.pv-box pre { white-space: pre-wrap; margin: 0; }
+@media (max-width: 760px) {
+  .layout { grid-template-columns: 1fr; gap: 8px; }
+  nav { position: static; display: flex; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+  nav a { white-space: nowrap; background: var(--panel-2); }
+  .filter { white-space: nowrap; }
+  .bar h1 { width: 100%; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>个人偏好问卷</h1>
+    <div class="progress"><div class="track"><div class="fill" id="fill"></div></div><span id="ptext">0 / 0</span></div>
+    <span class="est" id="est"></span>
+    <div class="actions">
+      <button id="btnRec" class="hidden" title="只填还没回答、也没跳过的题；填完还能改">其余按推荐填</button>
+      <button class="primary" id="btnExport">导出回答</button>
+      <button class="ghost" id="btnTheme" title="切换主题">主题</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav id="nav"></nav>
+  <main id="main"></main>
+</div>
+
+<dialog id="dlg">
+  <div class="dlg-body">
+    <h3>导出为 Markdown</h3>
+    <div class="row" style="margin-top:0">
+      <label><input type="checkbox" id="onlyNew" checked> 只导出上次导出后新增或修改的回答</label>
+    </div>
+    <textarea id="out" readonly></textarea>
+    <div class="row">
+      <button class="primary" id="btnCopy">复制并标记为已导出</button>
+      <button id="btnDownload">下载 .md</button>
+      <span style="flex:1"></span>
+      <button class="link" id="btnReset">清空全部回答</button>
+      <button id="btnClose">关闭</button>
+    </div>
+    <div class="hint" style="margin-top:8px">复制后粘贴到 Claude Code 对话里，助手会按 playbooks/profile-questionnaire.md 并入。</div>
+  </div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+/*
+ * 题库。维护规则（见 playbooks/profile-questionnaire.md）：
+ * - id 一经使用不复用、不改含义；改题干可以，改含义就换新 id
+ * - 新题追加到对应分区末尾；整题作废就加 retired: true（保留已有回答，不再显示）
+ * - type: single 单选 / multi 多选 / text 文本；other: true 表示带「其他」输入框
+ * - 可选：rec 推荐答案（单选写选项，多选写选项数组，文本写建议文字）+ why 推荐理由；
+ *   previews: { 选项: { mermaid | html | img } } 选项预览；required: true 必答（priority 分区里的题都算必答）
+ * - 分区 priority: true 排在前面并标「必答」；minutes 可以覆盖自动估的用时
+ */
+const SECTIONS = [
+  { id: "comm", title: "与助手沟通", target: "profile/preferences.md#沟通", priority: true,
+    desc: "你想让助手怎么回你、怎么问你。（示例问卷，按你的情况改）" },
+  { id: "record", title: "记录与提醒", target: "profile/preferences.md#记录与信息管理", priority: true,
+    desc: "日常对话里记多少、什么时候提醒你。" },
+  { id: "work", title: "工作方式", target: "profile/preferences.md#工作方式 · profile/about.md",
+    desc: "你怎么安排时间、做决定、处理卡点。" },
+  { id: "tech", title: "技术与工具", target: "profile/preferences.md#工具",
+    desc: "写代码和用工具的习惯。" },
+];
+
+const Q = [
+  // ---------- 与助手沟通 ----------
+  { id: "c01", s: "comm", type: "single", q: "回复一般写多长？",
+    opts: ["尽量短，只给结论", "适中：结论 + 关键理由", "详细：完整分析过程", "看问题大小决定"] },
+  { id: "c02", s: "comm", type: "single", q: "回复的顺序？",
+    opts: ["先结论，后理由", "先背景，再结论", "无所谓"] },
+  { id: "c03", s: "comm", type: "single", q: "要不要助手主动给建议？",
+    opts: ["主动给，但标明是推断", "只在我问的时候给", "只陈述事实，不给建议"] },
+  { id: "c04", s: "comm", type: "single", q: "助手拿不准你的意图时？",
+    opts: ["直接问我", "按合理假设先做完，再说明假设", "看风险：小事先做，大事先问"] },
+  { id: "c05", s: "comm", type: "text", q: "助手该怎么称呼你？", hint: "例如名字、昵称，或者不用称呼" },
+
+  // ---------- 记录与提醒 ----------
+  { id: "r01", s: "record", type: "single", q: "日常对话里，助手主动记录到什么程度？",
+    opts: ["积极：聊到就记", "只记明确的事实和进展", "只在我说「记一下」时记"] },
+  { id: "r02", s: "record", type: "single", q: "回复末尾要不要「已记：…」那一行？",
+    opts: ["要", "不要", "只在记了东西时写"] },
+  { id: "r03", s: "record", type: "single", q: "多久提醒你做一次回顾？",
+    opts: ["每周日", "每两周", "每月", "不用提醒"] },
+
+  // ---------- 工作方式 ----------
+  { id: "w01", s: "work", type: "single", q: "助手遇到没有偏好的事时？",
+    opts: ["按最佳实践先做，做完说明取舍", "先问再动", "看是否可逆"] },
+  { id: "w02", s: "work", type: "multi", q: "哪些事必须先问你？", other: true,
+    opts: ["对外发布 / 推送", "花钱", "删除数据", "改目标或验收标准"], required: true },
+
+  // ---------- 技术与工具 ----------
+  { id: "t01", s: "tech", type: "multi", q: "平时用哪些 AI agent 工具？", other: true,
+    opts: ["Claude Code", "Codex", "OpenCode", "Cursor", "Orca"] },
+  { id: "t02", s: "tech", type: "text", q: "写代码 / 用工具有什么习惯？", hint: "例如测试先行、小步提交、不用某个库" },
+];
+
+// ---------- 状态 ----------
+const STORE_KEY = "questionnaire-answers";
+let state = { answers: {}, lastExport: 0, theme: "" };
+try { const raw = localStorage.getItem(STORE_KEY); if (raw) state = Object.assign(state, JSON.parse(raw)); } catch (e) {}
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+
+const live = Q.filter(q => !q.retired);
+const SECS = SECTIONS.slice().sort((a, b) => (b.priority ? 1 : 0) - (a.priority ? 1 : 0));   // 必答的分区排前面
+const secOf = id => SECTIONS.find(s => s.id === id) || {};
+const must = q => !!(q.required || secOf(q.s).priority);
+const recOf = q => q.rec == null ? null : (q.type === "multi" ? [].concat(q.rec) : q.rec);
+const isRec = (q, o) => { const r = recOf(q); return Array.isArray(r) ? r.includes(o) : r === o; };
+const secsOf = q => ({ single: 20, multi: 30, text: 60 }[q.type] || 30) + (q.previews ? 20 : 0);   // 估的作答秒数
+const minutes = qs => Math.max(1, Math.round(qs.reduce((n, q) => n + secsOf(q), 0) / 60));
+const ans = id => state.answers[id];
+function hasValue(a) {
+  if (!a || a.skip) return false;
+  if (Array.isArray(a.v) && a.v.length) return true;
+  if (typeof a.v === "string" && a.v.trim()) return true;
+  return !!(a.other && a.other.trim());
+}
+function touch(id, patch) {
+  const prev = state.answers[id] || {};
+  const byRec = "byRec" in patch ? patch.byRec : ("v" in patch || "other" in patch) ? false : !!prev.byRec;   // 自己改过就不算按推荐
+  const a = Object.assign({ v: null, other: "", note: "", skip: false }, prev, patch, { byRec, t: Date.now() });
+  state.answers[id] = a; save(); refreshCard(id); refreshProgress();
+}
+
+// ---------- 渲染 ----------
+const main = document.getElementById("main"), nav = document.getElementById("nav");
+let onlyUnanswered = false, onlyMust = false;
+const openPv = {};   // 题号 → 展开预览的选项
+
+function el(tag, attrs, ...kids) {
+  const n = document.createElement(tag);
+  for (const k in attrs || {}) {
+    if (k === "class") n.className = attrs[k];
+    else if (k.startsWith("on")) n.addEventListener(k.slice(2), attrs[k]);
+    else n.setAttribute(k, attrs[k]);
+  }
+  for (const c of kids) if (c != null) n.append(c);
+  return n;
+}
+
+function cardFor(q) {
+  const a = ans(q.id) || {};
+  const answered = hasValue(a);
+  const card = el("div", { class: "card" + (answered ? " answered" : "") + (a.skip ? " skipped" : ""), id: "q-" + q.id });
+  const stateText = a.skip ? "已跳过" : answered ? "已答" : "未答";
+  card.append(el("div", { class: "q-head" },
+    el("div", { class: "q" }, el("span", { class: "qid" }, q.id), q.q,
+      q.required && !secOf(q.s).priority ? el("span", { class: "tag must" }, "必答") : null),
+    el("span", { class: "state" + (answered ? " ok" : "") }, stateText, answered && a.byRec ? el("span", { class: "by-rec" }, "按推荐") : null)));
+  if (q.hint) card.append(el("div", { class: "hint" }, q.hint));
+  const rec = recOf(q);
+  if (rec != null) card.append(el("div", { class: "rec-line" }, el("b", {}, "推荐："),
+    Array.isArray(rec) ? rec.join("、") : rec, q.why ? "　理由：" + q.why : ""));
+
+  if (q.type === "text") {
+    const ta = el("textarea", { rows: "2", placeholder: rec != null ? "推荐：" + rec : "写点什么…" });
+    ta.value = typeof a.v === "string" ? a.v : "";
+    ta.addEventListener("change", () => touch(q.id, { v: ta.value, skip: false }));
+    card.append(ta);
+  } else {
+    const multi = q.type === "multi";
+    const cur = multi ? (Array.isArray(a.v) ? a.v : []) : a.v;
+    const opts = el("div", { class: "opts" });
+    const open = openPv[q.id] || (openPv[q.id] = []);
+    for (const o of q.opts) {
+      const on = multi ? cur.includes(o) : cur === o;
+      const chip = el("button", { class: "chip" + (isRec(q, o) ? " rec" : ""), "aria-pressed": String(on), type: "button", onclick: () => {
+        if (multi) {
+          const next = cur.includes(o) ? cur.filter(x => x !== o) : cur.concat(o);
+          touch(q.id, { v: next, skip: false });
+        } else {
+          touch(q.id, { v: cur === o ? null : o, skip: false });
+        }
+      } }, o, isRec(q, o) ? el("span", { class: "rtag" }, "推荐") : null);
+      const pv = q.previews && q.previews[o];
+      opts.append(pv ? el("span", { class: "optw" }, chip, el("button", { class: "link", type: "button", onclick: () => {
+        const i = open.indexOf(o); i < 0 ? open.push(o) : open.splice(i, 1); refreshCard(q.id);
+      } }, open.includes(o) ? "收起" : "看图")) : chip);
+    }
+    card.append(opts);
+    const pvKeys = q.previews ? q.opts.filter(o => q.previews[o]) : [];
+    if (pvKeys.length > 1) card.append(el("div", { class: "row", style: "margin-top:6px" }, el("button", { class: "link", type: "button", onclick: () => {
+      openPv[q.id] = open.length === pvKeys.length ? [] : pvKeys.slice(); refreshCard(q.id);
+    } }, open.length === pvKeys.length ? "全部收起" : "并排看全部预览")));
+    if (open.length) {
+      const box = el("div", { class: "pvs" });
+      for (const o of pvKeys.filter(k => open.includes(k))) box.append(previewEl(q, o));
+      card.append(box);
+    }
+    if (multi) card.append(el("div", { class: "multi-note" }, "可多选"));
+    if (q.other) {
+      const inp = el("input", { type: "text", placeholder: "其他（可选）" });
+      inp.value = a.other || "";
+      inp.addEventListener("change", () => touch(q.id, { other: inp.value, skip: false }));
+      card.append(inp);
+    }
+  }
+
+  const noteOpen = !!(a.note && a.note.trim());
+  const note = el("textarea", { rows: "2", placeholder: "补充说明（可选）", class: noteOpen ? "" : "hidden" });
+  note.value = a.note || "";
+  note.addEventListener("change", () => touch(q.id, { note: note.value }));
+  card.append(note);
+  card.append(el("div", { class: "row" },
+    noteOpen ? null : el("button", { class: "link", type: "button", onclick: () => { note.classList.remove("hidden"); note.focus(); } }, "补充说明"),
+    el("button", { class: "link", type: "button", onclick: () => touch(q.id, { skip: !a.skip }) }, a.skip ? "取消跳过" : "暂不回答")));
+  if (onlyUnanswered && (answered || a.skip)) card.classList.add("hidden");
+  if (onlyMust && !must(q)) card.classList.add("hidden");
+  return card;
+}
+
+// ---------- 选项预览：mermaid 图、一小段 HTML、图片（生成时已内嵌成 base64） ----------
+const MERMAID_JS = "https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js";
+const svgCache = {};
+let mermaidP = null, mseq = 0;
+function loadMermaid() {
+  if (window.mermaid) return Promise.resolve(window.mermaid);
+  if (!mermaidP) mermaidP = new Promise((ok, no) => {
+    const s = document.createElement("script"); s.src = MERMAID_JS;
+    s.onload = () => window.mermaid ? ok(window.mermaid) : no(new Error("没加载到"));
+    s.onerror = () => no(new Error("加载失败")); document.head.appendChild(s);
+    setTimeout(() => no(new Error("加载超时")), 12000);
+  });
+  return mermaidP;
+}
+const isDark = () => state.theme ? state.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+function mermaidConf() {
+  const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
+  return { startOnLoad: false, securityLevel: "strict", theme: "base", themeVariables: {
+    darkMode: isDark(), background: v("--bg"), fontFamily: v("--font"), fontSize: "13px",
+    primaryColor: v("--brand-soft"), primaryTextColor: v("--text"), primaryBorderColor: v("--brand"), lineColor: v("--muted"),
+    secondaryColor: v("--blue-soft"), tertiaryColor: v("--panel-2"), textColor: v("--text"), mainBkg: v("--brand-soft"), nodeBorder: v("--brand"),
+    clusterBkg: v("--panel-2"), clusterBorder: v("--line"), edgeLabelBackground: v("--panel"), noteBkgColor: v("--orange-soft"), noteTextColor: v("--text"),
+    noteBorderColor: v("--orange"), actorBkg: v("--brand-soft"), actorBorder: v("--brand"), actorTextColor: v("--text"), signalColor: v("--text"), signalTextColor: v("--text"),
+    labelBoxBkgColor: v("--panel-2"), labelTextColor: v("--text"), loopTextColor: v("--text") } };
+}
+function tokensCss() {
+  const t = document.querySelector("style").textContent, a = t.indexOf("/* ui-tokens:start"), b = t.indexOf("/* ui-tokens:end */");
+  return a >= 0 && b > a ? t.slice(a, b) : "";
+}
+function previewEl(q, o) {
+  const p = q.previews[o], box = el("figure", { class: "pv-box" }, el("figcaption", {}, o));
+  if (p.img) box.append(el("img", { src: p.img, alt: o }));
+  else if (p.html) {
+    const f = el("iframe", { sandbox: "allow-same-origin", title: o });
+    f.srcdoc = "<!doctype html><meta charset=utf-8><style>" + tokensCss() + "body{background:var(--panel);padding:12px}</style>" + p.html;
+    f.addEventListener("load", () => { try { f.style.height = (f.contentDocument.documentElement.scrollHeight + 4) + "px"; } catch (e) {} });
+    box.append(f);
+  } else if (p.mermaid) {
+    const body = el("div", {}, el("div", { class: "hint" }, "图加载中…")), key = (isDark() ? "d:" : "l:") + p.mermaid;
+    box.append(body);
+    if (svgCache[key]) body.innerHTML = svgCache[key];
+    else loadMermaid().then(async m => {
+      m.initialize(mermaidConf());
+      const id = "qm" + (++mseq);
+      try { body.innerHTML = svgCache[key] = (await m.render(id, p.mermaid)).svg; }
+      catch (e) { document.getElementById("d" + id)?.remove(); body.replaceChildren(el("div", { class: "hint" }, "图的写法有误，下面是源码："), el("pre", {}, p.mermaid)); }
+    }).catch(e => body.replaceChildren(el("div", { class: "hint" }, "图没加载出来（" + e.message + "，可能断网了），下面是源码："), el("pre", {}, p.mermaid)));
+  }
+  return box;
+}
+
+function refreshCard(id) {
+  const q = live.find(x => x.id === id), old = document.getElementById("q-" + id);
+  if (q && old) {
+    const keep = onlyUnanswered; onlyUnanswered = false;   // 刚答完的题不立刻消失
+    old.replaceWith(cardFor(q)); onlyUnanswered = keep;
+  }
+}
+
+function render() {
+  main.innerHTML = ""; nav.innerHTML = "";
+  for (const s of SECS) {
+    const qs = live.filter(q => q.s === s.id);
+    if (!qs.length) continue;
+    const mins = s.minutes || minutes(qs);
+    const sec = el("section", { id: "s-" + s.id },
+      el("h2", {}, s.title, s.priority ? el("span", { class: "tag must" }, "必答") : null),
+      el("div", { class: "sec-meta" }, s.desc + "　→ " + s.target + "　· 约 " + mins + " 分钟"));
+    qs.forEach(q => sec.append(cardFor(q)));
+    if (onlyMust && !qs.some(must)) sec.classList.add("hidden");
+    main.append(sec);
+    nav.append(el("a", { href: "#s-" + s.id, "data-sec": s.id, class: onlyMust && !qs.some(must) ? "hidden" : "" },
+      el("span", {}, s.title), el("span", { class: "n" }, "")));
+  }
+  const filter = (label, get, set) => {
+    const f = el("label", { class: "filter" }, el("input", { type: "checkbox" }), label);
+    f.querySelector("input").checked = get();
+    f.querySelector("input").addEventListener("change", e => { set(e.target.checked); render(); });
+    return f;
+  };
+  nav.append(filter("只看未答", () => onlyUnanswered, v => onlyUnanswered = v));
+  const musts = live.filter(must);
+  if (musts.length && musts.length < live.length) nav.append(filter("只看必答", () => onlyMust, v => onlyMust = v));
+  const total = SECS.reduce((n, s) => { const qs = live.filter(q => q.s === s.id); return n + (qs.length ? s.minutes || minutes(qs) : 0); }, 0);
+  document.getElementById("est").textContent = "约 " + total + " 分钟" + (musts.length && musts.length < live.length ? "，必答约 " + minutes(musts) + " 分钟" : "");
+  document.getElementById("btnRec").classList.toggle("hidden", !live.some(q => recOf(q) != null));
+  refreshProgress();
+}
+
+function refreshProgress() {
+  const done = live.filter(q => hasValue(ans(q.id)) || (ans(q.id) || {}).skip).length;
+  document.getElementById("fill").style.width = (live.length ? done / live.length * 100 : 0) + "%";
+  document.getElementById("ptext").textContent = done + " / " + live.length;
+  for (const a of nav.querySelectorAll("a[data-sec]")) {
+    const qs = live.filter(q => q.s === a.dataset.sec);
+    const d = qs.filter(q => hasValue(ans(q.id)) || (ans(q.id) || {}).skip).length;
+    a.querySelector(".n").textContent = d + "/" + qs.length;
+    a.classList.toggle("complete", d === qs.length);
+  }
+}
+
+// ---------- 导出 ----------
+function fmt(q, a) {
+  let v = Array.isArray(a.v) ? a.v.join("、") : (a.v || "");
+  if (a.other && a.other.trim()) v = v ? v + "；其他：" + a.other.trim() : "其他：" + a.other.trim();
+  const lines = ["- [" + q.id + "] " + q.q + " → " + (v || "（只写了补充）") + (a.byRec && hasValue(a) ? "（按推荐）" : "")];
+  if (a.note && a.note.trim()) lines.push("  - 补充：" + a.note.trim().replace(/\n/g, " / "));
+  return lines;
+}
+function buildExport(onlyNew) {
+  const now = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  const stamp = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate()) + " " + pad(now.getHours()) + ":" + pad(now.getMinutes());
+  const L = ["# 问卷回答 " + stamp, "",
+    "> 来自 tools/questionnaire.html" + (onlyNew && state.lastExport ? "，只含上次导出后新增或修改的回答" : "") + "。",
+    "> 请按 playbooks/profile-questionnaire.md 并入。", ""];
+  let count = 0;
+  const skipped = [];
+  for (const s of SECS) {
+    const rows = [];
+    for (const q of live.filter(x => x.s === s.id)) {
+      const a = ans(q.id);
+      if (!a) continue;
+      if (onlyNew && a.t <= state.lastExport) continue;
+      if (a.skip) { skipped.push(q.id); continue; }
+      if (!hasValue(a) && !(a.note && a.note.trim())) continue;
+      rows.push(...fmt(q, a)); count++;
+    }
+    if (rows.length) L.push("## " + s.title + "（→ " + s.target + "）", "", ...rows, "");
+  }
+  if (skipped.length) L.push("## 暂不回答", "", skipped.join("、"), "");
+  if (!count && !skipped.length) L.push("_没有可导出的回答。_");
+  return { text: L.join("\n"), count, stamp };
+}
+
+const dlg = document.getElementById("dlg"), out = document.getElementById("out"), onlyNew = document.getElementById("onlyNew");
+function refreshExport() { out.value = buildExport(onlyNew.checked).text; }
+document.getElementById("btnExport").onclick = () => { refreshExport(); dlg.showModal(); };
+onlyNew.onchange = refreshExport;
+document.getElementById("btnClose").onclick = () => dlg.close();
+document.getElementById("btnCopy").onclick = async () => {
+  try { await navigator.clipboard.writeText(out.value); }
+  catch (e) { out.select(); document.execCommand("copy"); }
+  state.lastExport = Date.now(); save();
+  toast("已复制，粘贴到对话里即可");
+};
+document.getElementById("btnDownload").onclick = () => {
+  const { stamp } = buildExport(onlyNew.checked);
+  const blob = new Blob([out.value], { type: "text/markdown;charset=utf-8" });
+  const a = el("a", { href: URL.createObjectURL(blob), download: "questionnaire-" + stamp.replace(/[ :]/g, "-") + ".md" });
+  document.body.append(a); a.click(); a.remove();
+  state.lastExport = Date.now(); save();
+};
+document.getElementById("btnReset").onclick = () => {
+  if (confirm("清空全部回答？这个操作不能撤销。")) { state.answers = {}; state.lastExport = 0; save(); dlg.close(); render(); }
+};
+
+// ---------- 主题 ----------
+function applyTheme() { if (state.theme) document.documentElement.dataset.theme = state.theme; else delete document.documentElement.dataset.theme; }
+document.getElementById("btnTheme").onclick = () => {
+  const dark = state.theme ? state.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  state.theme = dark ? "light" : "dark"; save(); applyTheme();
+  if (Object.values(openPv).some(x => x.length)) render();   // 预览里的图按新主题重画
+};
+
+// ---------- 其余按推荐填：只填没回答、没跳过的题 ----------
+document.getElementById("btnRec").onclick = () => {
+  const todo = live.filter(q => recOf(q) != null && !hasValue(ans(q.id)) && !(ans(q.id) || {}).skip);
+  if (!todo.length) return toast("没有可以按推荐填的题了");
+  if (!confirm("按推荐填 " + todo.length + " 道还没回答的题？填完还能改，导出时会标「按推荐」。")) return;
+  const now = Date.now();
+  for (const q of todo) state.answers[q.id] = Object.assign({ v: null, other: "", note: "", skip: false }, ans(q.id), { v: recOf(q), byRec: true, t: now });
+  save(); render(); toast("已按推荐填了 " + todo.length + " 题");
+};
+
+let tt;
+function toast(msg) { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 1800); }
+
+applyTheme();
+render();
+</script>
+</body>
+</html>
